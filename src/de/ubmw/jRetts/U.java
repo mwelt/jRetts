@@ -25,4 +25,12 @@ public class U {
 	
 	public record Pair<K, T>(K left, T right){};
 	
+	public static String indent(int indent) {
+		StringBuffer b = new StringBuffer();
+		for(int i = 0; i < indent; i++) {
+			b.append("  ");
+		}
+		return b.toString();
+	}
+	
 }

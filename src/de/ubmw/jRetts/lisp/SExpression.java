@@ -3,6 +3,7 @@ package de.ubmw.jRetts.lisp;
 import java.util.List;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.U;
 import de.ubmw.jRetts.lisp.Literal.LiteralType;
 import de.ubmw.jRetts.lisp.fn.LispFunction;
 
@@ -19,6 +20,8 @@ public interface SExpression {
 	public boolean isFunction();
 	public boolean isVariable();
 	public boolean isLiteral();
+	
+	public String toString(int indent);
 	
 	public Literal eval(Env env) throws JRettsError; 
 	public LiteralType typeCheck(Env env) throws JRettsError;
@@ -51,6 +54,11 @@ public interface SExpression {
 		@Override
 		public boolean isLiteral() {
 			return true;
+		}
+		
+		@Override
+		public String toString(int i) {
+			return U.indent(i) + this.lit.toString();
 		}
 
 	}
@@ -88,9 +96,14 @@ public interface SExpression {
 			return false;
 		}
 		
+		@Override
+		public String toString(int i) {
+			return U.indent(i) + this.name;
+		}
+		
 	}
 	
-	public record FunctIonExp(LispFunction fn, List<SExpression> params, int line, int col) implements SExpression {
+	public record FunctionExp(LispFunction fn, List<SExpression> params, int line, int col) implements SExpression {
 
 		@Override
 		public SExpressionE getSexpType() {
@@ -121,6 +134,18 @@ public interface SExpression {
 		@Override
 		public boolean isLiteral() {
 			return false;
+		}
+		
+		@Override
+		public String toString(final int indent) {
+			StringBuilder b = new StringBuilder();
+			b.append(U.indent(indent));
+			b.append("(" + this.fn.symbol() + "\n");
+			b.append(String.join(" ", this.params.stream().map(s -> s.toString(indent + 1)).toArray(String[]::new)));
+			b.append("\n");
+			b.append(U.indent(indent));
+			b.append(")");
+			return b.toString();
 		}
 
 	}

@@ -1,5 +1,7 @@
 package de.ubmw.jRetts.lisp;
 
+import java.util.Arrays;
+
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.U;
 
@@ -57,6 +59,11 @@ public interface Literal {
 
 		@Override
 		public boolean isArray() { return false; }
+		
+		@Override
+		public String toString() {
+			return "nil";
+		}
 	}
 
 	public record LongLit(long l) implements Literal {
@@ -79,6 +86,11 @@ public interface Literal {
 
 		@Override
 		public boolean isArray() { return false; }
+		
+		@Override
+		public String toString() {
+			return Long.toString(this.l);
+		}
 	};
 
 	public record DoubleLit(double d) implements Literal {
@@ -99,6 +111,11 @@ public interface Literal {
 
 		@Override
 		public boolean isArray() { return false; }
+
+		@Override
+		public String toString() {
+			return Double.toString(this.d);
+		}
 	};
 
 	public record StringLit(String s) implements Literal {
@@ -119,6 +136,11 @@ public interface Literal {
 
 		@Override
 		public boolean isArray() { return false; }
+
+		@Override
+		public String toString() {
+			return "\"" + this.s + "\"";
+		}
 	};
 
 	public record ArrayLit(Literal[] a) implements Literal {
@@ -139,5 +161,14 @@ public interface Literal {
 
 		@Override
 		public boolean isArray() { return true; }
+
+		@Override
+		public String toString() {
+			StringBuffer b = new StringBuffer();
+			b.append("[");
+			String.join(", ", Arrays.stream(this.a).map(l -> l.toString()).toArray(String[]::new));
+			b.append("]");
+			return b.toString();
+		}
 	};
 }
