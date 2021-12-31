@@ -24,7 +24,6 @@ public class TypeUtils {
 	}
 	
 	public static boolean isFirstElementDouble(List<SExpression> l, Env env) throws JRettsError {
-		Literal r = l.get(0).eval(env);
-		return r.isDouble(); 
+		return l.get(0).typeCheck(env) == LiteralType.DOUBLE;
 	}
 }
