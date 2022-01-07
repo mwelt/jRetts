@@ -4,8 +4,6 @@ import de.ubmw.jRetts.lisp.SExpression;
 
 public class JRettsError extends Throwable {
 
-	private static final long serialVersionUID = -2448799473074669038L;
-
 	private Throwable wrappedThrowable = null;
 	
 	private String msg = "";

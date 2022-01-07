@@ -11,8 +11,10 @@ import de.ubmw.jRetts.lisp.fn.LispFunctionE;
 public class SExpressionBuild {
 	
 	public static SExpression F(String fnSymb, SExpression ...exps) throws JRettsError {
-		LispFunction fn = LispFunctionE.bySymbol(fnSymb);
-		return new FunctionExp(fn, Arrays.asList(exps), 0, 0);
+		return LispFunctionE.bySymbol(fnSymb)
+				.map(fn -> new FunctionExp(fn, Arrays.asList(exps), 0, 0))
+				.orElseThrow(() ->
+						new JRettsError("Unknown function symbol \"" + fnSymb + "\"."));
 	}
 	
 	public static LiteralExp LL(long l) throws JRettsError { 
