@@ -6,6 +6,8 @@ import de.ubmw.jRetts.lisp.SExpression;
 import de.ubmw.jRetts.lisp.fn.Do;
 import de.ubmw.jRetts.lisp.fn.LispFunction;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.CharBuffer;
@@ -18,6 +20,8 @@ import static de.ubmw.jRetts.lisp.SExpression.*;
 import static de.ubmw.jRetts.lisp.parser.Parser.State.*;
 
 public class Parser {
+
+    private static final Logger logger = LoggerFactory.getLogger("parser");
 
     public static int MAX_SYMBOL_LENGTH = 254;
 
@@ -107,6 +111,8 @@ public class Parser {
         List<Literal> cArray = Collections.emptyList();
         LiteralType cArrayType = NIL;
 
+        Stack<FunctionExp> stack = new Stack<>();
+
         int c;
 
         // -------------- //
@@ -131,22 +137,22 @@ public class Parser {
                 lstate = cstate;
                 cstate = cstate.apply((char) c);
 
+                logger.debug("'%c': %s -> %s".formatted(c, lstate.name(), cstate.name()));
 
                 // -- handle symbols and strings -- //
 
                 if(cstate == ASYMBOL || cstate == ASTRING){
                     if(lstate != cstate) {
-                        cBuf.clear();
-                    } else {
-                        cBuf.append((char) c);
+                        cBuf.flip().clear();
                     }
+                    cBuf.append((char) c);
                     continue;
                 }
 
                 // -- handle functions -- //
 
                 if(lstate != cstate && lstate == ASYMBOL && first){
-                    String fnSymbol = cBuf.toString();
+                    String fnSymbol = cBuf.flip().toString();
                     Optional<LispFunction> fn = LispFunctionE.bySymbol(fnSymbol);
                     if(fn.isEmpty()) {
                         throw new ParserError("Unknown function symbol \"" + fnSymbol + "\".", cline, cpos);
@@ -159,7 +165,7 @@ public class Parser {
                 // -- handle parameters -- //
 
                 else if (lstate != cstate && lstate == ASYMBOL) {
-                    String paraSymbol = cBuf.toString();
+                    String paraSymbol = cBuf.flip().toString();
                     SExpression paraExp = null;
 
                     if(paraSymbol.charAt(0) == '?'){
@@ -215,9 +221,6 @@ public class Parser {
                     // -- but only if there's no array context active -- //
                     if(! inArray) { cSExp.params().add(paraExp); }
 
-                    // TODO that right?
-                    continue;
-
                 } // <-- var, constant or number
 
 
@@ -225,7 +228,7 @@ public class Parser {
 
                 else if(lstate != cstate && lstate == ASTRING){
                     cBuf.append((char) c);
-                    Literal lit = new StringLit(cBuf.toString());
+                    Literal lit = new StringLit(cBuf.flip().toString());
 
                     if(inArray){
                         if(cArrayType == NIL){ cArrayType = STRING; }
@@ -241,21 +244,93 @@ public class Parser {
                 }
 
 
+                // -- array opening bracket -- //
+
+                if(lstate != cstate && cstate == AARRDOWN){
+
+                    if(inArray){
+                        throw new ParserError("Nested arrays are not allowed.", cline, cpos);
+                    }
+
+                    inArray = true;
+                    cstate = ALIST;
+                    cArray = new ArrayList<>();
+                    continue;
+                }
+
+
+                // -- array closing bracket -- //
+
+                if(lstate != cstate && cstate == AARRUP){
+
+                    if(! inArray){
+                        throw new ParserError("Unbalanced parentheses.", cline, cpos);
+                    }
+
+                    cSExp.params().add(new LiteralExp(new ArrayLit(cArray.toArray(new Literal[0])), cline, cpos));
+
+                    inArray = false;
+                    cArray = Collections.emptyList();
+
+                    cstate = ALIST;
+                    continue;
+                }
+
+
+                // -- list opening bracket -- //
+
+                if(cstate == ADOWN){
+
+                    if(inArray){
+                        throw new ParserError("Symbol not allowed here (List inside an array).", cline, cpos);
+                    }
+
+                    // -- if the first "parameter" is a list -- //
+                    // -- then it defaults to do operation   -- //
+                    if(first){
+                        cSExp = new FunctionExp(LispFunctionE.DO.getFn(),new ArrayList<>(), cline, cpos);
+                    }
+
+                    stack.push(cSExp);
+
+                    first = true;
+                    cstate = ALIST;
+                    continue;
+                }
+
+
+                // -- list closing bracket -- //
+
+                if(cstate == AUP){
+
+                    if(inArray){
+                        throw new ParserError("Symbol not allowed here (List inside an array).", cline, cpos);
+                    }
+
+                    if(stack.size() == 0){
+                        throw new ParserError("Unbalanced parentheses.", cline, cpos);
+                    }
+
+                    // -- add current SExp as param to the parent lisp -- //
+                    FunctionExp parentExp = stack.pop();
+                    parentExp.params().add(cSExp);
+
+                    cSExp = parentExp;
+                    cstate = ALIST;
+                }
 
             } // <-- while loop
 
 
-
-
-
-
-
+            if(stack.size() != 0){
+                throw new ParserError("Unbalanced parentheses.", cline, cpos);
+            }
 
         } catch (IOException iox) {
             throw new JRettsError("Unable to parse data. See wrapped Exception.", iox);
         }
 
-        return null;
+        return cSExp;
     }
 	
 }

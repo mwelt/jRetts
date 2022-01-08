@@ -1,8 +1,13 @@
 package de.ubmw.jRetts.lisp.parser;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.lisp.SExpression;
 import de.ubmw.jRetts.lisp.parser.Parser;
 import org.junit.jupiter.api.Test;
+
+import java.io.StringReader;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 class ParserTest {
 
@@ -12,9 +17,15 @@ class ParserTest {
                 (+ 1 (- 3 2))
                 """;
         try {
-            Parser.parse(code);
-        } catch(JRettsError err){
+            SExpression prog = Parser.parse(new StringReader(code));
+            System.out.println(prog.toString(0));
+        } catch(JRettsError err) {
             err.printStackTrace();
+            fail();
+        } catch(ParserError perr) {
+            System.err.printf("Parser Error (%d, %d): %s%n", perr.getLine(), perr.getPosition(), perr.getMsg());
+            perr.printStackTrace();
+            fail();
         }
     }
 }
