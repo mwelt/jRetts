@@ -3,6 +3,7 @@ package de.ubmw.jRetts.lisp;
 import static org.junit.jupiter.api.Assertions.*;
 import static de.ubmw.jRetts.lisp.SExpressionBuild.*;
 
+import de.ubmw.jRetts.vocabulary.Literal;
 import org.junit.jupiter.api.Test;
 
 import de.ubmw.jRetts.JRettsError;

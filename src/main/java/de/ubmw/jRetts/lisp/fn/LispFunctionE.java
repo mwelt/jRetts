@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
-import de.ubmw.jRetts.lisp.Literal;
+import de.ubmw.jRetts.vocabulary.Literal;
 import de.ubmw.jRetts.lisp.SExpression;
 
 public enum LispFunctionE {

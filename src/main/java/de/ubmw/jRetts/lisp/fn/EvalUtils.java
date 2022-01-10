@@ -5,9 +5,9 @@ import java.util.function.BiFunction;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
-import de.ubmw.jRetts.lisp.Literal;
-import de.ubmw.jRetts.lisp.Literal.*;
-import static de.ubmw.jRetts.lisp.Literal.*;
+import de.ubmw.jRetts.vocabulary.Literal;
+
+import static de.ubmw.jRetts.vocabulary.Literal.*;
 import de.ubmw.jRetts.lisp.SExpression;
 
 public class EvalUtils {
@@ -34,10 +34,11 @@ public class EvalUtils {
 					sLong = ((LongLit) l).l(); 
 				}
 			} else {
+
+				//  -- type checker should have made sure, -- //
+				//  -- that there's only double or long -- //
 			
-			// type checker should have made sure, that there's only double or long
-			
-				if(isDouble.booleanValue()) {
+				if(isDouble) {
 					sDouble = doubleFn.apply(sDouble, ((DoubleLit) l).d());
 				} else {
 					sLong = longFn.apply(sLong, ((LongLit) l).l());
@@ -46,6 +47,6 @@ public class EvalUtils {
 			
 		}
 		
-		return isDouble.booleanValue() ? newDoubleLit(sDouble) : newLongLit(sLong);
+		return isDouble ? newDoubleLit(sDouble) : newLongLit(sLong);
 	}
 }

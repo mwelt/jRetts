@@ -5,8 +5,8 @@ import java.util.Arrays;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.SExpression.LiteralExp;
 import de.ubmw.jRetts.lisp.SExpression.FunctionExp;
-import de.ubmw.jRetts.lisp.fn.LispFunction;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
+import de.ubmw.jRetts.vocabulary.Literal;
 
 public class SExpressionBuild {
 	

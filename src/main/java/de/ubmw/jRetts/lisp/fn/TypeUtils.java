@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
-import de.ubmw.jRetts.lisp.Literal.LiteralType;
+import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
 import de.ubmw.jRetts.lisp.SExpression;
 
 public class TypeUtils {

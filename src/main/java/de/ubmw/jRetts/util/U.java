@@ -1,9 +1,11 @@
-package de.ubmw.jRetts;
+package de.ubmw.jRetts.util;
+
+import de.ubmw.jRetts.JRettsError;
 
 import java.util.List;
 
 public class U {
-	public static void nonNull(Object o, String name) throws JRettsError{
+	public static void nonNull(Object o, String name) throws JRettsError {
 		if(o == null) {
 			throw new JRettsError(name + " can not be null.");
 		}

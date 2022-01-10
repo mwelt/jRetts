@@ -1,11 +1,12 @@
 package de.ubmw.jRetts.lisp.parser;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.Literal;
+import de.ubmw.jRetts.vocabulary.Literal;
 import de.ubmw.jRetts.lisp.SExpression;
-import de.ubmw.jRetts.lisp.fn.Do;
 import de.ubmw.jRetts.lisp.fn.LispFunction;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
+import de.ubmw.jRetts.util.ArrayDequeStack;
+import de.ubmw.jRetts.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +15,8 @@ import java.nio.CharBuffer;
 import java.util.*;
 import java.util.function.Function;
 
-import static de.ubmw.jRetts.lisp.Literal.*;
-import static de.ubmw.jRetts.lisp.Literal.LiteralType.*;
+import static de.ubmw.jRetts.vocabulary.Literal.*;
+import static de.ubmw.jRetts.vocabulary.Literal.LiteralType.*;
 import static de.ubmw.jRetts.lisp.SExpression.*;
 import static de.ubmw.jRetts.lisp.parser.Parser.State.*;
 
@@ -111,7 +112,7 @@ public class Parser {
         List<Literal> cArray = Collections.emptyList();
         LiteralType cArrayType = NIL;
 
-        Stack<FunctionExp> stack = new Stack<>();
+        Stack<FunctionExp> stack = new ArrayDequeStack<>();
 
         int c;
 
@@ -206,8 +207,8 @@ public class Parser {
 
                         // -- handle a literal inside an array -- //
                         if(inArray){
-                            if(cArrayType == NIL){ cArrayType = lit.getType(); }
-                            if(cArrayType == lit.getType()){
+                            if(cArrayType == NIL){ cArrayType = lit.getLiteralType(); }
+                            if(cArrayType == lit.getLiteralType()){
                                 cArray.add(lit);
                             }else{
                                 throw new ParserError("Arrays must be of single type only.", cline, cpos);
