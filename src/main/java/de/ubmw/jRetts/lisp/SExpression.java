@@ -3,26 +3,31 @@ package de.ubmw.jRetts.lisp;
 import java.util.List;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.vocabulary.Constant;
+import de.ubmw.jRetts.vocabulary.Atom;
 import de.ubmw.jRetts.vocabulary.Literal;
 import de.ubmw.jRetts.util.U;
 import de.ubmw.jRetts.lisp.fn.LispFunction;
+import de.ubmw.jRetts.vocabulary.Term.*;
 
 public interface SExpression {
 	
-	enum Type {
+	enum SExpressionType {
 		FUNCTION,
 		VARIABLE,
 		CONSTANT,
-		LITERAL;
+		LITERAL,
+		ATOM,
+		RULE;
 	}
 
-	Type getType();
+	SExpressionType getType();
 	
 	boolean isFunction();
 	boolean isVariable();
 	boolean isLiteral();
 	boolean isConstant();
+	boolean isAtom();
+	boolean isRule();
 	
 	String toString(int indent);
 	
@@ -32,7 +37,7 @@ public interface SExpression {
 	record LiteralExp(Literal lit, int line, int col) implements SExpression {
 
 		@Override
-		public Type getType() { return SExpression.Type.LITERAL; }
+		public SExpressionType getType() { return SExpressionType.LITERAL; }
 
 		@Override
 		public Literal eval(Env env) throws JRettsError { 
@@ -65,28 +70,38 @@ public interface SExpression {
 		}
 
 		@Override
+		public boolean isAtom() {
+			return false;
+		}
+
+		@Override
+		public boolean isRule() {
+			return false;
+		}
+
+		@Override
 		public String toString(int i) {
 			return U.indent(i) + this.lit.toString();
 		}
 
 	}
 	
-	record VariableExp(String name, int line, int col) implements SExpression {
+	record VariableExp(Variable var, int line, int col) implements SExpression {
 
 		@Override
-		public Type getType() {
-			return SExpression.Type.VARIABLE;
+		public SExpressionType getType() {
+			return SExpressionType.VARIABLE;
 		}
 
 		@Override
 		public Literal eval(Env env) throws JRettsError {
-			return env.resolve(this.name);
+			return env.resolve(this.var.s());
 		}
 
 		@Override
 		public Literal.LiteralType typeCheck(Env env) throws JRettsError {
-			return env.resolve(this.name).getLiteralType();
-		};
+			return env.resolve(this.var.s()).getLiteralType();
+		}
 
 
 		@Override
@@ -110,8 +125,18 @@ public interface SExpression {
 		}
 
 		@Override
+		public boolean isAtom() {
+			return false;
+		}
+
+		@Override
+		public boolean isRule() {
+			return false;
+		}
+
+		@Override
 		public String toString(int i) {
-			return U.indent(i) + this.name;
+			return U.indent(i) + this.var.toString();
 		}
 		
 	}
@@ -119,8 +144,8 @@ public interface SExpression {
 	record ConstantExp(Constant constant, int line, int col) implements SExpression {
 
 		@Override
-		public Type getType() {
-			return SExpression.Type.CONSTANT;
+		public SExpressionType getType() {
+			return SExpressionType.CONSTANT;
 		}
 
 		@Override
@@ -131,7 +156,7 @@ public interface SExpression {
 		@Override
 		public Literal.LiteralType typeCheck(Env env) throws JRettsError {
 			throw new JRettsError("Constants are not allowed to be evaluated directly.");
-		};
+		}
 
 		@Override
 		public boolean isFunction() {
@@ -140,7 +165,7 @@ public interface SExpression {
 
 		@Override
 		public boolean isVariable() {
-			return true;
+			return false;
 		}
 
 		@Override
@@ -150,12 +175,22 @@ public interface SExpression {
 
 		@Override
 		public boolean isConstant() {
+			return true;
+		}
+
+		@Override
+		public boolean isAtom() {
+			return false;
+		}
+
+		@Override
+		public boolean isRule() {
 			return false;
 		}
 
 		@Override
 		public String toString(int i) {
-			return U.indent(i) + ":" + constant.s();
+			return U.indent(i) + constant.toString();
 		}
 
 	}
@@ -163,8 +198,8 @@ public interface SExpression {
 	record FunctionExp(LispFunction fn, List<SExpression> params, int line, int col) implements SExpression {
 
 		@Override
-		public Type getType() {
-			return SExpression.Type.FUNCTION;
+		public SExpressionType getType() {
+			return SExpressionType.FUNCTION;
 		}
 
 		@Override
@@ -199,6 +234,16 @@ public interface SExpression {
 		}
 
 		@Override
+		public boolean isAtom() {
+			return false;
+		}
+
+		@Override
+		public boolean isRule() {
+			return false;
+		}
+
+		@Override
 		public String toString(final int indent) {
 			return U.indent(indent) +
 					"(" + this.fn.symbol() + "\n" +
@@ -210,4 +255,57 @@ public interface SExpression {
 
 	}
 
+	record AtomExp(Atom atom, int line, int col) implements SExpression {
+
+		@Override
+		public SExpressionType getType() {
+			return SExpressionType.ATOM;
+		}
+
+		@Override
+		public Literal eval(Env env) throws JRettsError {
+			throw new JRettsError("Constants are not allowed to be evaluated directly.");
+		}
+
+		@Override
+		public Literal.LiteralType typeCheck(Env env) throws JRettsError {
+			throw new JRettsError("Constants are not allowed to be evaluated directly.");
+		}
+
+		@Override
+		public boolean isFunction() {
+			return false;
+		}
+
+		@Override
+		public boolean isVariable() {
+			return false;
+		}
+
+		@Override
+		public boolean isLiteral() {
+			return false;
+		}
+
+		@Override
+		public boolean isConstant() {
+			return true;
+		}
+
+		@Override
+		public boolean isAtom() {
+			return true;
+		}
+
+		@Override
+		public boolean isRule() {
+			return false;
+		}
+
+		@Override
+		public String toString(int i) {
+			return U.indent(i) + atom.toString();
+		}
+
+	}
 }

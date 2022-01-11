@@ -169,40 +169,39 @@ public class Parser {
                     String paraSymbol = cBuf.flip().toString();
                     SExpression paraExp = null;
 
-                    if(paraSymbol.charAt(0) == '?'){
+                    if(paraSymbol.charAt(0) == '?') {
 
                         // -- a variable -- //
-                        if(inArray){
+                        if (inArray) {
                             throw new ParserError("Variables are not allowed inside arrays.", cline, cpos);
                         }
-                        paraExp = new VariableExp(paraSymbol, cline, cpos);
+                        paraExp = new VariableExp(new Variable(paraSymbol), cline, cpos);
+
+                    } else if(paraSymbol.charAt(0) == ':') {
+
+                        // -- a constant -- //
+                       paraExp = new ConstantExp(new Constant(paraSymbol), cline, cpos);
 
                     } else {
 
                         // -- a literal -- //
                         Literal lit;
 
-                        if(paraSymbol.charAt(0) == ':') {
-                            // -- a constant -- //
-                            lit = new ConstantLit(paraSymbol);
-                        } else {
+                        // -- a number -- //
+                        Scanner s = new Scanner(paraSymbol);
 
-                            // -- a number -- //
-                            Scanner s = new Scanner(paraSymbol);
-
-                            if (s.hasNextLong()) {
-                                lit = new LongLit(s.nextLong());
-                                if (s.hasNext()) {
-                                    throw new ParserError("Something went wrong while parsing symbol as Long \"" + paraSymbol + "\".", cline, cpos);
-                                }
-                            } else if (s.hasNextDouble()) {
-                                lit = new DoubleLit(s.nextDouble());
-                                if (s.hasNext()) {
-                                    throw new ParserError("Something went wrong while parsing symbol as Double \"" + paraSymbol + "\".", cline, cpos);
-                                }
-                            } else {
-                                throw new ParserError("Can not determine type of symbol \"" + paraSymbol + "\".", cline, cpos);
+                        if (s.hasNextLong()) {
+                            lit = new LongLit(s.nextLong());
+                            if (s.hasNext()) {
+                                throw new ParserError("Something went wrong while parsing symbol as Long \"" + paraSymbol + "\".", cline, cpos);
                             }
+                        } else if (s.hasNextDouble()) {
+                            lit = new DoubleLit(s.nextDouble());
+                            if (s.hasNext()) {
+                                throw new ParserError("Something went wrong while parsing symbol as Double \"" + paraSymbol + "\".", cline, cpos);
+                            }
+                        } else {
+                            throw new ParserError("Can not determine type of symbol \"" + paraSymbol + "\".", cline, cpos);
                         }
 
                         // -- handle a literal inside an array -- //

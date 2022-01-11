@@ -1,11 +1,13 @@
 package de.ubmw.jRetts.vocabulary;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.lisp.parser.Parser;
 import de.ubmw.jRetts.util.U;
 
-public interface Literal extends Term {
+public interface Literal extends Term, Serializable {
 
 	static Literal newNil() {
 		return new NilLit();
@@ -53,6 +55,7 @@ public interface Literal extends Term {
 	boolean asBool() throws JRettsError;
 
 	class NilLit implements Literal {
+
 		@Override
 		public LiteralType getLiteralType() { return LiteralType.NIL; }
 
@@ -143,6 +146,10 @@ public interface Literal extends Term {
 
 		public NilLit() {
 			super();
+		}
+
+		public boolean equals(Term t) throws JRettsError {
+			return t.isLiteral() && t.asLiteral().isNil();
 		}
 	}
 
@@ -236,6 +243,10 @@ public interface Literal extends Term {
 		public TermType getTermType() {
 			return TermType.LITERAL;
 		}
+
+		public boolean equals(Term t) throws JRettsError {
+			return t.isLiteral() && t.asLiteral().isLong() && t.asLiteral().asLong() == this.l;
+		}
 	}
 
 	record DoubleLit(double d) implements Literal {
@@ -326,9 +337,14 @@ public interface Literal extends Term {
 		public TermType getTermType() {
 			return TermType.LITERAL;
 		}
+
+		public boolean equals(Term t) throws JRettsError {
+			return t.isLiteral() && t.asLiteral().isDouble() && t.asLiteral().asDouble() == this.d;
+		}
 	}
 
 	record StringLit(String s) implements Literal {
+
 		@Override
 		public LiteralType getLiteralType() { return LiteralType.STRING; }
 
@@ -374,7 +390,7 @@ public interface Literal extends Term {
 
 		@Override
 		public boolean asBool() throws JRettsError {
-			return false;
+			throw new JRettsError("Can not return String as Bool.");
 		}
 
 		@Override
@@ -416,9 +432,14 @@ public interface Literal extends Term {
 		public TermType getTermType() {
 			return TermType.LITERAL;
 		}
+
+		public boolean equals(Term t) throws JRettsError {
+			return t.isLiteral() && t.asLiteral().isString() && t.asLiteral().asString().equals(this.s);
+		}
 	}
 
 	record BoolLit(boolean b) implements Literal {
+
 		@Override
 		public LiteralType getLiteralType() { return LiteralType.BOOL; }
 
@@ -443,9 +464,35 @@ public interface Literal extends Term {
 		}
 
 		@Override
+		public long asLong() throws JRettsError {
+			throw new JRettsError("Can not return Bool as Long.");
+		}
+
+		@Override
+		public double asDouble() throws JRettsError {
+			throw new JRettsError("Can not return Bool as Double.");
+		}
+
+		@Override
+		public String asString() throws JRettsError {
+			throw new JRettsError("Can not return Bool as String.");
+		}
+
+		@Override
+		public Literal[] asArray() throws JRettsError {
+			throw new JRettsError("Can not return Bool as Array.");
+		}
+
+		@Override
+		public boolean asBool() throws JRettsError {
+			return this.b;
+		}
+
+		@Override
 		public String toString() {
 			return Boolean.toString(b);
 		}
+
 		@Override
 		public boolean isVariable() {
 			return false;
@@ -480,9 +527,14 @@ public interface Literal extends Term {
 		public TermType getTermType() {
 			return TermType.LITERAL;
 		}
+
+		public boolean equals(Term t) throws JRettsError {
+			return t.isLiteral() && t.asLiteral().isBool() && t.asLiteral().asBool() == this.b;
+		}
 	}
 
 	record ArrayLit(Literal[] a) implements Literal {
+
 		@Override
 		public LiteralType getLiteralType() { return LiteralType.ARRAY; }
 
@@ -504,6 +556,31 @@ public interface Literal extends Term {
 		@Override
 		public boolean isBool() {
 			return false;
+		}
+
+		@Override
+		public long asLong() throws JRettsError {
+			throw new JRettsError("Can not return Array as Long.");
+		}
+
+		@Override
+		public double asDouble() throws JRettsError {
+			throw new JRettsError("Can not return Array as Double.");
+		}
+
+		@Override
+		public String asString() throws JRettsError {
+			throw new JRettsError("Can not return Array as String.");
+		}
+
+		@Override
+		public Literal[] asArray() throws JRettsError {
+			return this.a;
+		}
+
+		@Override
+		public boolean asBool() throws JRettsError {
+			throw new JRettsError("Can not return Array as Bool.");
 		}
 
 		@Override
@@ -550,6 +627,27 @@ public interface Literal extends Term {
 		public TermType getTermType() {
 			return TermType.LITERAL;
 		}
+
+		public boolean equals(Term t) throws JRettsError {
+			if (! t.isLiteral()) {
+				return false;
+			}
+
+			Literal lit = t.asLiteral();
+
+			if (! lit.isArray() || lit.asArray().length != this.a.length) {
+				return false;
+			}
+
+			for (int i = 0; i < this.a.length; i++) {
+				if (! lit.asArray()[i].equals(this.a[i])) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 	}
 
 }

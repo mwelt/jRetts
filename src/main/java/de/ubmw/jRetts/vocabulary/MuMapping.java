@@ -1,5 +1,7 @@
 package de.ubmw.jRetts.vocabulary;
 
+import de.ubmw.jRetts.JRettsError;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +13,10 @@ public class MuMapping {
         mappings = new HashMap<>();
     }
 
-    public Optional<Literal> apply(Term.Variable var) {
-        return Optional.ofNullable(mappings.get(var.s()));
+    public Literal apply(Term.Variable var) throws JRettsError {
+        if (! mappings.containsKey(var.s())) {
+            throw new JRettsError("No mapping for '" + var + "'.");
+        }
+        return mappings.get(var.s());
     }
 }

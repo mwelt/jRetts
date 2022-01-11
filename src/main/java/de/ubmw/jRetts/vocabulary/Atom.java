@@ -2,7 +2,13 @@ package de.ubmw.jRetts.vocabulary;
 
 import de.ubmw.jRetts.JRettsError;
 
-public record Atom(Term s, Term p, Term o, boolean neg) {
+import java.io.Serializable;
+
+public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable {
+
+    public static Atom A(Term s, Term p, Term o) {
+        return new Atom(s, p, o);
+    }
 
     public static class AtomBuilder {
 
@@ -44,7 +50,26 @@ public record Atom(Term s, Term p, Term o, boolean neg) {
         AtomBuilder builder = new AtomBuilder();
         if (s.isVariable()) {
             builder.s(m.apply(s.asVariable()));
+        } else {
+            builder.s(s);
         }
 
+        if (p.isVariable()) {
+            builder.s(m.apply(p.asVariable()));
+        } else {
+            builder.s(p);
+        }
+
+        if (o.isVariable()) {
+            builder.s(m.apply(o.asVariable()));
+        } else {
+            builder.s(o);
+        }
+
+        return builder.build();
+    }
+
+    public String toString() {
+        return  s.toString() + " " + p.toString() + " " + o.toString() + " .";
     }
 }
