@@ -1,7 +1,6 @@
 package de.ubmw.jRetts.vocabulary;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.parser.Parser;
 
 import java.io.Serializable;
 
@@ -101,7 +100,8 @@ public interface Term extends Serializable {
         }
     }
 
-    record Variable(String s) implements Term {
+    record Variable(String name) implements Term {
+
         @Override
         public boolean isVariable() {
             return true;
@@ -139,14 +139,19 @@ public interface Term extends Serializable {
 
         @Override
         public String toString() {
-            return "?" + s;
+            return "?" + name;
         }
 
         public boolean equals(Term term) throws JRettsError {
             if (! term.isVariable()) {
                 return false;
             }
-            return term.asVariable().s().equals(s);
+            return term.asVariable().name().equals(name);
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
         }
     }
 

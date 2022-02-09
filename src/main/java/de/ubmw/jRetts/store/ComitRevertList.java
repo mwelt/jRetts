@@ -37,6 +37,14 @@ public class ComitRevertList<E> implements Collection<E> {
         if(k == 0) { versions.push(0); }
     }
 
+    public void join(int n) {
+        int k = versions.pop();
+        while(--n > 0) {
+            versions.pop();
+        }
+        versions.push(k);
+    }
+
     public boolean contains(Object o) {
         return list.contains(o);
     }

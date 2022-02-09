@@ -4,7 +4,6 @@ import de.ubmw.jRetts.JRettsError;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class MuMapping {
     private Map<String, Literal> mappings;
@@ -14,9 +13,9 @@ public class MuMapping {
     }
 
     public Literal apply(Term.Variable var) throws JRettsError {
-        if (! mappings.containsKey(var.s())) {
+        if (! mappings.containsKey(var.name())) {
             throw new JRettsError("No mapping for '" + var + "'.");
         }
-        return mappings.get(var.s());
+        return mappings.get(var.name());
     }
 }

@@ -36,7 +36,7 @@ public class EvalUtils {
 			} else {
 
 				//  -- type checker should have made sure, -- //
-				//  -- that there's only double or long -- //
+				//  -- that there'name only double or long -- //
 			
 				if(isDouble) {
 					sDouble = doubleFn.apply(sDouble, ((DoubleLit) l).d());

@@ -25,7 +25,7 @@ class ParserTest {
             err.printStackTrace();
             fail();
         } catch(ParserError perr) {
-            System.err.printf("Parser Error (%d, %d): %s%n", perr.getLine(), perr.getPosition(), perr.getMsg());
+            System.err.printf("Parser Error (%d, %d): %name%n", perr.getLine(), perr.getPosition(), perr.getMsg());
             perr.printStackTrace();
             fail();
         }

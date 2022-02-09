@@ -22,7 +22,7 @@ public interface Literal extends Term, Serializable {
 	}
 	
 	static Literal newStringLit(String s) throws JRettsError{
-		U.nonNull(s, "s");
+		U.nonNull(s, "name");
 		return new StringLit(s);
 	}
 	

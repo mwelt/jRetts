@@ -2,14 +2,12 @@ package de.ubmw.jRetts.store;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.vocabulary.Atom;
-import de.ubmw.jRetts.vocabulary.Term;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.ubmw.jRetts.vocabulary.Atom.A;
 import static de.ubmw.jRetts.vocabulary.Term.T;
-import static org.junit.jupiter.api.Assertions.*;
 
 class StoreTest {
 

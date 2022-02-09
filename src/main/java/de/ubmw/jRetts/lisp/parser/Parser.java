@@ -138,7 +138,7 @@ public class Parser {
                 lstate = cstate;
                 cstate = cstate.apply((char) c);
 
-                logger.debug("'%c': %s -> %s".formatted(c, lstate.name(), cstate.name()));
+                logger.debug("'%c': %name -> %name".formatted(c, lstate.name(), cstate.name()));
 
                 // -- handle symbols and strings -- //
 
@@ -218,7 +218,7 @@ public class Parser {
                     }
 
                     // -- add the parameter to the current function   -- //
-                    // -- but only if there's no array context active -- //
+                    // -- but only if there'name no array context active -- //
                     if(! inArray) { cSExp.params().add(paraExp); }
 
                 } // <-- var, constant or number

@@ -1,7 +1,6 @@
 package de.ubmw.jRetts.store;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.parser.Parser;
 import de.ubmw.jRetts.vocabulary.Atom;
 import de.ubmw.jRetts.vocabulary.Term.*;
 
@@ -20,7 +19,7 @@ public class Store {
         }
     }
 
-    private static record IndexNode(Constant c, ComitRevertList<Integer> pos, ComitRevertList<Integer> sps, ComitRevertList<Integer> sos) {
+    private record IndexNode(Constant c, ComitRevertList<Integer> pos, ComitRevertList<Integer> sps, ComitRevertList<Integer> sos) {
         IndexNode(Constant c) {
             this(c, new ComitRevertList<>(5), new ComitRevertList<>(5), new ComitRevertList<>(5));
         }
@@ -42,7 +41,7 @@ public class Store {
         }
 
         if ( ! (atom.s().isConstant() && atom.p().isConstant())) {
-            throw new JRettsError("s and p positions must be constant.");
+            throw new JRettsError("name and p positions must be constant.");
         }
 
         int idx = data.size();
@@ -56,41 +55,41 @@ public class Store {
 
         if (atom.o().isConstant()) {
             IndexNode oINode = index.computeIfAbsent(atom.o().asConstant(), IndexNode::new);
-            pINode.sps().add(idx);
+            oINode.sps().add(idx);
         }
     }
 
     public List<Atom> query(Atom query) throws JRettsError {
 
-        if (!(query.s().isVariable() || query.s().isConstant())
-                && (query.p().isVariable() || query.p().isConstant())
-                && (query.o().isConstant() || query.o().isVariable() || query.o().isLiteral())) {
+        if ( ! ( query.s().isVariable() || query.s().isConstant() )
+                && ( query.p().isVariable() || query.p().isConstant() )
+                && ( query.o().isConstant() || query.o().isVariable() || query.o().isLiteral() ) ) {
             throw new JRettsError("Unsupported query format.");
         }
 
         if (query.s().isVariable() && query.p().isVariable() && query.o().isVariable()) {
-            // -- ?s ?p ?o -- //
+            // -- ?name ?p ?o -- //
             return querySPO(query);
         } else if (query.s().isVariable() && query.p().isVariable() && (query.o().isConstant() || query.o().isLiteral())) {
-            // -- ?s ?p :o / 1.234 -- //
+            // -- ?name ?p :o / 1.234 -- //
             return querySP(query);
         } else if (query.s().isVariable() && query.p().isConstant() && (query.o().isConstant() || query.o().isLiteral())) {
-            // -- ?s :p :o / 1.234 -- //
+            // -- ?name :p :o / 1.234 -- //
             return queryS(query);
         } else if (query.s().isConstant() && query.p().isVariable() && (query.o().isConstant() || query.o().isLiteral())) {
-            // -- :s ?p :o / 1.234 -- //
+            // -- :name ?p :o / 1.234 -- //
             return queryP(query);
         } else if (query.s().isConstant() && query.p().isConstant() &&  query.o().isVariable()) {
-            // -- :s :p ?o -- //
+            // -- :name :p ?o -- //
             return queryO(query);
         } else if (query.s().isConstant() && query.p().isVariable() && query.o().isVariable()) {
-            // -- :s ?p ?o -- //
+            // -- :name ?p ?o -- //
             return queryPO(query);
         } else if (query.s().isVariable() && query.p().isConstant() && query.o().isVariable()) {
-            // -- ?s :p ?o -- //
+            // -- ?name :p ?o -- //
             return querySO(query);
         } else if (query.s().isConstant() && query.p().isConstant() && (query.o().isConstant() || query.o().isLiteral())) {
-            // -- :s :p :o / 1.234 -- //
+            // -- :name :p :o / 1.234 -- //
             return queryConst(query);
         }
 
@@ -98,7 +97,7 @@ public class Store {
 
     }
 
-    // -- :s :p :o / 1.234 -- //
+    // -- :name :p :o / 1.234 -- //
     private List<Atom> queryConst(Atom query) throws JRettsError {
         if (! (index.containsKey(query.s().asConstant()) &&
                 index.containsKey(query.p().asConstant()))) {
@@ -115,7 +114,7 @@ public class Store {
         return result;
     }
 
-    // -- ?s :p ?o -- //
+    // -- ?name :p ?o -- //
     private List<Atom> querySO(Atom query) throws JRettsError {
         if (! index.containsKey(query.p().asConstant())) {
             return Collections.emptyList();
@@ -129,7 +128,7 @@ public class Store {
         return result;
     }
 
-    // -- :s ?p ?o -- //
+    // -- :name ?p ?o -- //
     private List<Atom> queryPO(Atom query) throws JRettsError {
         if (! index.containsKey(query.s().asConstant())) {
             return Collections.emptyList();
@@ -143,7 +142,7 @@ public class Store {
         return result;
     }
 
-    // -- :s :p ?o -- //
+    // -- :name :p ?o -- //
     private List<Atom> queryO(Atom query) throws JRettsError {
         if (! (index.containsKey(query.s().asConstant()) &&
                 index.containsKey(query.p().asConstant()))) {
@@ -160,7 +159,7 @@ public class Store {
         return result;
     }
 
-    // -- query ?s ?p :o / 1.234 -- //
+    // -- query ?name ?p :o / 1.234 -- //
     private List<Atom> querySP(Atom query) throws JRettsError {
         if (! query.o().isConstant()) {
             throw  new JRettsError("Queries with only literals in o-position are not allowed.");
@@ -177,7 +176,7 @@ public class Store {
         return result;
     }
 
-    // -- query ?s :p :o / 1.234 -- //
+    // -- query ?name :p :o / 1.234 -- //
     private List<Atom> queryS(Atom query) throws JRettsError {
         if (! index.containsKey(query.p().asConstant())) {
             return Collections.emptyList();
@@ -193,7 +192,7 @@ public class Store {
         return result;
     }
 
-    // -- query :s ?p :o / 1.234 -- //
+    // -- query :name ?p :o / 1.234 -- //
     private List<Atom> queryP(Atom query) throws JRettsError {
         if (! index.containsKey(query.s().asConstant())) {
             return Collections.emptyList();
@@ -209,7 +208,7 @@ public class Store {
         return result;
     }
 
-    // -- do not allow ?s ?p ?o -- //
+    // -- do not allow ?name ?p ?o -- //
     private List<Atom> querySPO(Atom query) throws JRettsError {
         throw  new JRettsError("Queries with variables in all three positions are not allowed.");
     }

@@ -1,14 +1,17 @@
 package de.ubmw.jRetts.vocabulary;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.lisp.SExpression;
 
 import java.io.Serializable;
+import java.util.List;
 
 public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable {
 
     public static Atom A(Term s, Term p, Term o) {
         return new Atom(s, p, o);
     }
+
 
     public static class AtomBuilder {
 
