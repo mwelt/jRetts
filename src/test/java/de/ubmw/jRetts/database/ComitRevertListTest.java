@@ -1,4 +1,4 @@
-package de.ubmw.jRetts.store;
+package de.ubmw.jRetts.database;
 
 import org.junit.jupiter.api.Test;
 

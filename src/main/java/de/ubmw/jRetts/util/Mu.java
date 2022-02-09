@@ -1,6 +1,7 @@
 package de.ubmw.jRetts.util;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.vocabulary.Literal;
 import de.ubmw.jRetts.vocabulary.Term;
 
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Mu implements Map<Term.Variable, Term> {
 
@@ -39,6 +41,21 @@ public class Mu implements Map<Term.Variable, Term> {
         }
 
         return mu3;
+    }
+
+    public String toString() {
+        return "[ " +
+                mu.entrySet().stream()
+                .map(e  -> e.getKey().toString() + " => " + e.getValue().toString())
+                .collect(Collectors.joining(", "))
+                + "]";
+    }
+
+    public Term apply(Term.Variable var) throws JRettsError {
+        if (! mu.containsKey(var)) {
+            throw new JRettsError("No mapping for '" + var + "'.");
+        }
+        return mu.get(var);
     }
 
     @Override

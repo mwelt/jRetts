@@ -1,25 +1,23 @@
 package de.ubmw.jRetts.lisp.fn;
 
-import java.util.List;
-
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
+import de.ubmw.jRetts.lisp.SExpression;
 import de.ubmw.jRetts.vocabulary.Literal;
 import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
-import de.ubmw.jRetts.lisp.SExpression;
 
 public class Plus implements LispFunction {
 
 	@Override
-	public Literal eval(List<SExpression> params, Env env) throws JRettsError {
-		return EvalUtils.foldListOfNumbers(params, env, 
-				(Double x, Double y) -> x + y,
-				(Long x, Long y) -> x + y);
+	public Literal eval(SExpression.FunctionExp self, Env env) throws JRettsError {
+		return EvalUtils.foldListOfNumbers(self.params(), env,
+				Double::sum,
+				Long::sum);
 	}
 
 	@Override
-	public LiteralType typeCheck(List<SExpression> params, Env env) throws JRettsError {
-		return TypeUtils.listOfNumbers(params, env);
+	public LiteralType typeCheck(SExpression.FunctionExp self, Env env) throws JRettsError {
+		return TypeUtils.listOfNumbers(self.params(), env);
 	}
 	
 	@Override

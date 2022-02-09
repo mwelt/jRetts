@@ -1,11 +1,11 @@
 package de.ubmw.jRetts.lisp.fn;
 
-import java.util.List;
-
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
-import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
 import de.ubmw.jRetts.lisp.SExpression;
+import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
+
+import java.util.List;
 
 public class TypeUtils {
 

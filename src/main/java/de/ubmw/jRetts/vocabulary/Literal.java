@@ -1,11 +1,10 @@
 package de.ubmw.jRetts.vocabulary;
 
+import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.util.U;
+
 import java.io.Serializable;
 import java.util.Arrays;
-
-import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.parser.Parser;
-import de.ubmw.jRetts.util.U;
 
 public interface Literal extends Term, Serializable {
 

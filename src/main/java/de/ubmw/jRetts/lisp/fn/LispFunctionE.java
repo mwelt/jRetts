@@ -1,14 +1,14 @@
 package de.ubmw.jRetts.lisp.fn;
 
+import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.lisp.Env;
+import de.ubmw.jRetts.lisp.SExpression;
+import de.ubmw.jRetts.vocabulary.Literal;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.Env;
-import de.ubmw.jRetts.vocabulary.Literal;
-import de.ubmw.jRetts.lisp.SExpression;
 
 public enum LispFunctionE {
 
@@ -19,12 +19,12 @@ public enum LispFunctionE {
 		}
 
 		@Override
-		public Literal eval(List<SExpression> params, Env env) throws JRettsError {
+		public Literal eval(SExpression.FunctionExp self, Env env) throws JRettsError {
 			return new Literal.NilLit();
 		}
 
 		@Override
-		public Literal.LiteralType typeCheck(List<SExpression> params, Env env) throws JRettsError {
+		public Literal.LiteralType typeCheck(SExpression.FunctionExp self, Env env) throws JRettsError {
 			return Literal.LiteralType.NIL;
 		}
 	}),

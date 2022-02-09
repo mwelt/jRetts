@@ -1,8 +1,8 @@
-package de.ubmw.jRetts.store;
+package de.ubmw.jRetts.database;
 
 import de.ubmw.jRetts.util.ArrayDequeStack;
-
 import de.ubmw.jRetts.util.Stack;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;

@@ -1,19 +1,17 @@
 package de.ubmw.jRetts.lisp.fn;
 
-import java.util.List;
-
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
+import de.ubmw.jRetts.lisp.SExpression;
 import de.ubmw.jRetts.vocabulary.Literal;
 import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
-import de.ubmw.jRetts.lisp.SExpression;
 
 public interface LispFunction {
 	
-	public String symbol();
+	String symbol();
 	
-	public Literal eval(List<SExpression> params, Env env) throws JRettsError;
+	Literal eval(SExpression.FunctionExp self, Env env) throws JRettsError;
 	
-	public LiteralType typeCheck(List<SExpression> params, Env env) throws JRettsError;
+	LiteralType typeCheck(SExpression.FunctionExp self, Env env) throws JRettsError;
 
 }

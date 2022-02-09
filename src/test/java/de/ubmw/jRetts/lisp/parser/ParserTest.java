@@ -1,9 +1,9 @@
 package de.ubmw.jRetts.lisp.parser;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.database.Database;
 import de.ubmw.jRetts.lisp.Env;
 import de.ubmw.jRetts.lisp.SExpression;
-import de.ubmw.jRetts.lisp.parser.Parser;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -20,7 +20,7 @@ class ParserTest {
         try {
             SExpression prog = Parser.parse(new StringReader(code));
             System.out.println(prog.toString(0));
-            System.out.println(prog.eval(new Env()).toString());
+            System.out.println(prog.eval(new Env(new Database())).toString());
         } catch(JRettsError err) {
             err.printStackTrace();
             fail();

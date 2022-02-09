@@ -11,7 +11,19 @@ import java.util.stream.Stream;
 
 public class Omega implements List<Mu>, Collection<Mu>, Iterable<Mu> {
 
-    private final List<Mu> omega = new ArrayList<>();
+    public static Omega emptyOmega() {
+        return new Omega(Collections.emptyList());
+    }
+
+    private final List<Mu> omega;
+
+    private Omega(List<Mu> omega) {
+        this.omega = omega;
+    }
+
+    public Omega() {
+        this(new ArrayList<>());
+    }
 
     public Omega join(Omega o2) throws JRettsError {
         Omega o3 = new Omega();

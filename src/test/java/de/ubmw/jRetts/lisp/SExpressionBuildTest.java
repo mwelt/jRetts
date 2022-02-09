@@ -1,19 +1,20 @@
 package de.ubmw.jRetts.lisp;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static de.ubmw.jRetts.lisp.SExpressionBuild.*;
-
+import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.database.Database;
 import de.ubmw.jRetts.vocabulary.Literal;
 import org.junit.jupiter.api.Test;
 
-import de.ubmw.jRetts.JRettsError;
+import static de.ubmw.jRetts.lisp.SExpressionBuild.F;
+import static de.ubmw.jRetts.lisp.SExpressionBuild.LL;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class SExpressionBuildTest {
 
 	@Test
-	void test() throws JRettsError {
+	void test() {
 		try {
-			Env env = new Env();
+			Env env = new Env(new Database());
 			SExpression sexp = F("+", LL(1), F("-", LL(3), LL(5)));
 			System.out.println(sexp.toString(0));
 			sexp.typeCheck(env);

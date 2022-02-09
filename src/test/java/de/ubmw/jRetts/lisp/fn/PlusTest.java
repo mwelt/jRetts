@@ -1,8 +1,8 @@
 package de.ubmw.jRetts.lisp.fn;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 class PlusTest {
 

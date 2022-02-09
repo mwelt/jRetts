@@ -1,24 +1,33 @@
 package de.ubmw.jRetts.lisp;
 
-import java.util.Map;
-
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.store.Store;
+import de.ubmw.jRetts.database.Database;
+import de.ubmw.jRetts.util.Omega;
 import de.ubmw.jRetts.vocabulary.Literal;
-import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Env {
 
 	private Map<String, Literal> vars;
-	
-	public Literal lastValue;
-	
-	public LiteralType lastType;
 
-	public Store store;
+	public Database database;
 
-	public boolean inRule = false;
-	
+	public boolean ruleEval = false;
+
+	public List<SExpression> rules;
+
+	public Omega omega;
+
+	public Env(Database database) {
+		vars = new HashMap<>();
+		this.database = database;
+		rules = new ArrayList<>();
+	}
+
 	public Literal resolve(String name) throws JRettsError {
 		if (vars.containsKey(name)) {
 			return vars.get(name);

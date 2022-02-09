@@ -19,23 +19,23 @@ public class Dot implements  LispFunction {
     }
 
     @Override
-    public Literal eval(List<SExpression> params, Env env) throws JRettsError {
-        Atom a = atomFromSExpression(params);
-        if (env.inRule) {
+    public Literal eval(SExpression.FunctionExp self, Env env) throws JRettsError {
+        Atom a = atomFromSExpression(self.params());
+        if (env.ruleEval) {
             // -- query -- //
-//            env.omega.join(a, env.store.query(a));
+            env.omega.join(env.database.query(a));
         } else {
             // -- insert -- //
-            env.store.add(a);
+            env.database.add(a);
         }
 
         return Literal.newNil();
     }
 
     @Override
-    public Literal.LiteralType typeCheck(List<SExpression> params, Env env) throws JRettsError {
+    public Literal.LiteralType typeCheck(SExpression.FunctionExp self, Env env) throws JRettsError {
         // -- test if params are actual convertable to an atom -- //
-        atomFromSExpression(params);
+        atomFromSExpression(self.params());
         return Literal.LiteralType.NIL;
     }
 

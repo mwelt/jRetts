@@ -1,12 +1,13 @@
 package de.ubmw.jRetts.lisp;
 
-import java.util.List;
-
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.vocabulary.Literal;
-import de.ubmw.jRetts.util.U;
 import de.ubmw.jRetts.lisp.fn.LispFunction;
-import de.ubmw.jRetts.vocabulary.Term.*;
+import de.ubmw.jRetts.util.U;
+import de.ubmw.jRetts.vocabulary.Literal;
+import de.ubmw.jRetts.vocabulary.Term.Constant;
+import de.ubmw.jRetts.vocabulary.Term.Variable;
+
+import java.util.List;
 
 public interface SExpression {
 	
@@ -236,14 +237,13 @@ public interface SExpression {
 
 		@Override
 		public Literal eval(Env env) throws JRettsError {
-			return fn.eval(this.params, env);
+			return fn.eval(this, env);
 		}
 
 		@Override
 		public Literal.LiteralType typeCheck(Env env) throws JRettsError {
-			return fn.typeCheck(this.params, env);
+			return fn.typeCheck(this, env);
 		}
-		
 
 		@Override
 		public boolean isFunction() {

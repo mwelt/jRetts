@@ -1,10 +1,9 @@
 package de.ubmw.jRetts.vocabulary;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.SExpression;
+import de.ubmw.jRetts.util.Mu;
 
 import java.io.Serializable;
-import java.util.List;
 
 public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable {
 
@@ -49,22 +48,30 @@ public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable 
         return ! (s.isVariable() || p.isVariable() || o.isVariable());
     }
 
-    public Atom assignMapping(MuMapping m) throws JRettsError {
+    /**
+     * Transforms a non ground bgp Atom (this) into a ground instance by applying
+     * a corresponding mu mapping.
+     *
+     * @param mu the mapping to apply.
+     * @return the ground instance of this.
+     * @throws JRettsError
+     */
+    public Atom assignMapping(Mu mu) throws JRettsError {
         AtomBuilder builder = new AtomBuilder();
         if (s.isVariable()) {
-            builder.s(m.apply(s.asVariable()));
+            builder.s(mu.apply(s.asVariable()));
         } else {
             builder.s(s);
         }
 
         if (p.isVariable()) {
-            builder.s(m.apply(p.asVariable()));
+            builder.s(mu.apply(p.asVariable()));
         } else {
             builder.s(p);
         }
 
         if (o.isVariable()) {
-            builder.s(m.apply(o.asVariable()));
+            builder.s(mu.apply(o.asVariable()));
         } else {
             builder.s(o);
         }
