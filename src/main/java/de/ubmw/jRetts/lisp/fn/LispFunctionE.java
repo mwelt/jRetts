@@ -1,9 +1,9 @@
 package de.ubmw.jRetts.lisp.fn;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.datalog.Literal;
 import de.ubmw.jRetts.lisp.Env;
 import de.ubmw.jRetts.lisp.SExpression;
-import de.ubmw.jRetts.datalog.Literal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,8 @@ public enum LispFunctionE {
 	BGP_DELTA(new BgpDelta()),
 	ADD_RULE(new AddRule()),
 	PLUS(new Plus()),
-	MINUS(new Minus());
+	MINUS(new Minus()),
+	BIND(new Bind());
 	
 	private static final Map<String, LispFunctionE> STR2FN = new HashMap<>();
 
@@ -42,7 +43,7 @@ public enum LispFunctionE {
 		for(LispFunctionE v : LispFunctionE.values()) {
 			LispFunctionE.STR2FN.put(v.fn.symbol(), v);
 		}
-	};
+	}
 	
 	public static Optional<LispFunctionE> bySymbol(String symbol) {
 		if(STR2FN.containsKey(symbol)) {

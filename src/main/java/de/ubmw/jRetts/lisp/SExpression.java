@@ -2,7 +2,6 @@ package de.ubmw.jRetts.lisp;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.datalog.Atom;
-import de.ubmw.jRetts.lisp.fn.LispFunction;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
 import de.ubmw.jRetts.util.U;
 import de.ubmw.jRetts.datalog.Literal;

@@ -6,12 +6,10 @@ import de.ubmw.jRetts.lisp.SExpression;
 import de.ubmw.jRetts.datalog.Atom;
 import de.ubmw.jRetts.datalog.Literal;
 
-import java.util.List;
-
 /**
  * Function that interprets the parameters as an {@link Atom}.
  */
-public class Dot implements  LispFunction {
+public class Dot implements LispFunction {
 
     @Override
     public String symbol() {

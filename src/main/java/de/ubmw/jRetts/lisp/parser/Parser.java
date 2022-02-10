@@ -2,7 +2,6 @@ package de.ubmw.jRetts.lisp.parser;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.SExpression;
-import de.ubmw.jRetts.lisp.fn.LispFunction;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
 import de.ubmw.jRetts.util.ArrayDequeStack;
 import de.ubmw.jRetts.util.Stack;

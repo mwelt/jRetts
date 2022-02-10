@@ -1,8 +1,7 @@
 package de.ubmw.jRetts.lisp.fn;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.lisp.Env;
-import de.ubmw.jRetts.lisp.SExpression;
+import de.ubmw.jRetts.lisp.*;
 import de.ubmw.jRetts.datalog.Literal;
 import de.ubmw.jRetts.datalog.Literal.LiteralType;
 

@@ -5,24 +5,19 @@ import de.ubmw.jRetts.datalog.Literal;
 import de.ubmw.jRetts.lisp.Env;
 import de.ubmw.jRetts.lisp.SExpression;
 
-public class Bgp implements LispFunction {
+public class Bind implements LispFunction {
     @Override
     public String symbol() {
-        return "bgp";
+        return "bind";
     }
 
     @Override
     public Literal eval(SExpression.FunctionExp self, Env env) throws JRettsError {
-        env.omega.join(env.database.query(self.params().get(0).asAtomExp().atom()));
-        return Literal.newNil();
+        throw new JRettsError("Not implemented yet.");
     }
 
     @Override
     public Literal.LiteralType typeCheck(SExpression.FunctionExp self, Env env) throws JRettsError {
-        if(self.params().size() != 1 || ! self.params().get(0).isAtom()) {
-            throw new JRettsError("Single AtomExp expected.");
-        }
-
-        return Literal.LiteralType.NIL;
+        throw new JRettsError("Not implemented yet.");
     }
 }

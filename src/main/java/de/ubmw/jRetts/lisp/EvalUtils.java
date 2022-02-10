@@ -1,4 +1,4 @@
-package de.ubmw.jRetts.lisp.fn;
+package de.ubmw.jRetts.lisp;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
