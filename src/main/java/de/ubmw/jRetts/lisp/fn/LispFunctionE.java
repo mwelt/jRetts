@@ -3,10 +3,9 @@ package de.ubmw.jRetts.lisp.fn;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
 import de.ubmw.jRetts.lisp.SExpression;
-import de.ubmw.jRetts.vocabulary.Literal;
+import de.ubmw.jRetts.datalog.Literal;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

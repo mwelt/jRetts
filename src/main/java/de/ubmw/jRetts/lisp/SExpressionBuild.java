@@ -4,7 +4,7 @@ import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.SExpression.FunctionExp;
 import de.ubmw.jRetts.lisp.SExpression.LiteralExp;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
-import de.ubmw.jRetts.vocabulary.Literal;
+import de.ubmw.jRetts.datalog.Literal;
 
 import java.util.Arrays;
 

@@ -1,10 +1,10 @@
-package de.ubmw.jRetts.vocabulary;
+package de.ubmw.jRetts.datalog;
 
 import de.ubmw.jRetts.JRettsError;
 
 import java.io.Serializable;
 
-import static de.ubmw.jRetts.vocabulary.Term.TermType.CONSTANT;
+import static de.ubmw.jRetts.datalog.Term.TermType.CONSTANT;
 
 public interface Term extends Serializable {
 

@@ -6,7 +6,7 @@ import de.ubmw.jRetts.lisp.fn.LispFunction;
 import de.ubmw.jRetts.lisp.fn.LispFunctionE;
 import de.ubmw.jRetts.util.ArrayDequeStack;
 import de.ubmw.jRetts.util.Stack;
-import de.ubmw.jRetts.vocabulary.Literal;
+import de.ubmw.jRetts.datalog.Literal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +18,9 @@ import java.util.function.Function;
 
 import static de.ubmw.jRetts.lisp.SExpression.*;
 import static de.ubmw.jRetts.lisp.parser.Parser.State.*;
-import static de.ubmw.jRetts.vocabulary.Literal.*;
-import static de.ubmw.jRetts.vocabulary.Literal.LiteralType.NIL;
-import static de.ubmw.jRetts.vocabulary.Literal.LiteralType.STRING;
+import static de.ubmw.jRetts.datalog.Literal.*;
+import static de.ubmw.jRetts.datalog.Literal.LiteralType.NIL;
+import static de.ubmw.jRetts.datalog.Literal.LiteralType.STRING;
 
 public class Parser {
 

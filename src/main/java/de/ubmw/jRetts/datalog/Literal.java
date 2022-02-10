@@ -1,4 +1,4 @@
-package de.ubmw.jRetts.vocabulary;
+package de.ubmw.jRetts.datalog;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.util.U;

@@ -3,11 +3,11 @@ package de.ubmw.jRetts.database;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.util.Mu;
 import de.ubmw.jRetts.util.Omega;
-import de.ubmw.jRetts.vocabulary.Atom;
+import de.ubmw.jRetts.datalog.Atom;
 import org.junit.jupiter.api.Test;
 
-import static de.ubmw.jRetts.vocabulary.Atom.A;
-import static de.ubmw.jRetts.vocabulary.Term.T;
+import static de.ubmw.jRetts.datalog.Atom.A;
+import static de.ubmw.jRetts.datalog.Term.T;
 
 class DatabaseTest {
 

@@ -3,14 +3,12 @@ package de.ubmw.jRetts.database;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.util.Mu;
 import de.ubmw.jRetts.util.Omega;
-import de.ubmw.jRetts.vocabulary.Atom;
-import de.ubmw.jRetts.vocabulary.Term.Constant;
+import de.ubmw.jRetts.datalog.Atom;
+import de.ubmw.jRetts.datalog.Term.Constant;
 
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Database {
 
@@ -24,7 +22,8 @@ public class Database {
         }
     }
 
-    private record IndexNode(Constant c, ComitRevertList<Integer> pos, ComitRevertList<Integer> sps, ComitRevertList<Integer> sos) {
+    private record IndexNode(Constant c, ComitRevertList<Integer> pos, ComitRevertList<Integer> sps,
+                             ComitRevertList<Integer> sos) {
         IndexNode(Constant c) {
             this(c, new ComitRevertList<>(5), new ComitRevertList<>(5), new ComitRevertList<>(5));
         }
@@ -34,23 +33,18 @@ public class Database {
 
     private final Map<Constant, IndexNode> index;
 
-    private final Set<Constant> idb;
-    private final Set<Constant> edb;
-
     public Database() {
         data = new ComitRevertList<>();
         index = new HashMap<>();
-        idb = new HashSet<>();
-        edb = new HashSet<>();
     }
 
     // TODO syncronize
     public void add(Atom atom) throws JRettsError {
-        if (! atom.isGround()) {
+        if (!atom.isGround()) {
             throw new JRettsError("Only ground atoms are allowed in the store.");
         }
 
-        if ( ! (atom.s().isConstant() && atom.p().isConstant())) {
+        if (!(atom.s().isConstant() && atom.p().isConstant())) {
             throw new JRettsError("name and p positions must be constant.");
         }
 
@@ -71,9 +65,9 @@ public class Database {
 
     public Omega query(Atom bgp) throws JRettsError {
 
-        if ( ! ( bgp.s().isVariable() || bgp.s().isConstant() )
-                && ( bgp.p().isVariable() || bgp.p().isConstant() )
-                && ( bgp.o().isConstant() || bgp.o().isVariable() || bgp.o().isLiteral() ) ) {
+        if (!(bgp.s().isVariable() || bgp.s().isConstant())
+                && (bgp.p().isVariable() || bgp.p().isConstant())
+                && (bgp.o().isConstant() || bgp.o().isVariable() || bgp.o().isLiteral())) {
             throw new JRettsError("Unsupported query format.");
         }
 
@@ -89,7 +83,7 @@ public class Database {
         } else if (bgp.s().isConstant() && bgp.p().isVariable() && (bgp.o().isConstant() || bgp.o().isLiteral())) {
             // -- :name ?p :o / 1.234 -- //
             return queryP(bgp);
-        } else if (bgp.s().isConstant() && bgp.p().isConstant() &&  bgp.o().isVariable()) {
+        } else if (bgp.s().isConstant() && bgp.p().isConstant() && bgp.o().isVariable()) {
             // -- :name :p ?o -- //
             return queryO(bgp);
         } else if (bgp.s().isConstant() && bgp.p().isVariable() && bgp.o().isVariable()) {
@@ -110,7 +104,7 @@ public class Database {
     // -- :name :p :o / 1.234 -- //
     private Omega queryConst(Atom bgp) throws JRettsError {
 
-        throw  new JRettsError("Queries with constants in all three positions are not allowed.");
+        throw new JRettsError("Queries with constants in all three positions are not allowed.");
 
 //        if (! (index.containsKey(query.s().asConstant()) &&
 //                index.containsKey(query.p().asConstant()))) {
@@ -129,7 +123,7 @@ public class Database {
 
     // -- ?name :p ?o -- //
     private Omega querySO(Atom bgp) throws JRettsError {
-        if (! index.containsKey(bgp.p().asConstant())) {
+        if (!index.containsKey(bgp.p().asConstant())) {
             return Omega.emptyOmega();
         }
         Omega result = new Omega();
@@ -146,7 +140,7 @@ public class Database {
 
     // -- :name ?p ?o -- //
     private Omega queryPO(Atom bgp) throws JRettsError {
-        if (! index.containsKey(bgp.s().asConstant())) {
+        if (!index.containsKey(bgp.s().asConstant())) {
             return Omega.emptyOmega();
         }
         Omega result = new Omega();
@@ -163,7 +157,7 @@ public class Database {
 
     // -- :name :p ?o -- //
     private Omega queryO(Atom bgp) throws JRettsError {
-        if (! (index.containsKey(bgp.s().asConstant()) &&
+        if (!(index.containsKey(bgp.s().asConstant()) &&
                 index.containsKey(bgp.p().asConstant()))) {
             return Omega.emptyOmega();
         }
@@ -182,10 +176,10 @@ public class Database {
 
     // -- query ?name ?p :o / 1.234 -- //
     private Omega querySP(Atom bgp) throws JRettsError {
-        if (! bgp.o().isConstant()) {
-            throw  new JRettsError("Queries with only literals in o-position are not allowed.");
+        if (!bgp.o().isConstant()) {
+            throw new JRettsError("Queries with only literals in o-position are not allowed.");
         }
-        if (! index.containsKey(bgp.o().asConstant())) {
+        if (!index.containsKey(bgp.o().asConstant())) {
             return Omega.emptyOmega();
         }
         IndexNode oINode = index.get(bgp.o().asConstant());
@@ -202,7 +196,7 @@ public class Database {
 
     // -- query ?name :p :o / 1.234 -- //
     private Omega queryS(Atom bgp) throws JRettsError {
-        if (! index.containsKey(bgp.p().asConstant())) {
+        if (!index.containsKey(bgp.p().asConstant())) {
             return Omega.emptyOmega();
         }
         IndexNode pINode = index.get(bgp.p().asConstant());
@@ -220,7 +214,7 @@ public class Database {
 
     // -- query :name ?p :o / 1.234 -- //
     private Omega queryP(Atom bgp) throws JRettsError {
-        if (! index.containsKey(bgp.s().asConstant())) {
+        if (!index.containsKey(bgp.s().asConstant())) {
             return Omega.emptyOmega();
         }
         IndexNode sINode = index.get(bgp.s().asConstant());
@@ -238,7 +232,7 @@ public class Database {
 
     // -- do not allow ?name ?p ?o -- //
     private Omega querySPO(Atom bgp) throws JRettsError {
-        throw  new JRettsError("Queries with variables in all three positions are not allowed.");
+        throw new JRettsError("Queries with variables in all three positions are not allowed.");
     }
 
 }

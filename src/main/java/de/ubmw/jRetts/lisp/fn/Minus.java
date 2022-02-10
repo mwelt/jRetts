@@ -3,8 +3,8 @@ package de.ubmw.jRetts.lisp.fn;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.lisp.Env;
 import de.ubmw.jRetts.lisp.SExpression;
-import de.ubmw.jRetts.vocabulary.Literal;
-import de.ubmw.jRetts.vocabulary.Literal.LiteralType;
+import de.ubmw.jRetts.datalog.Literal;
+import de.ubmw.jRetts.datalog.Literal.LiteralType;
 
 public class Minus implements LispFunction {
 

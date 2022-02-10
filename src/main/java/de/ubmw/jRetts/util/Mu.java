@@ -1,8 +1,7 @@
 package de.ubmw.jRetts.util;
 
 import de.ubmw.jRetts.JRettsError;
-import de.ubmw.jRetts.vocabulary.Literal;
-import de.ubmw.jRetts.vocabulary.Term;
+import de.ubmw.jRetts.datalog.Term;
 
 import java.util.Collection;
 import java.util.HashMap;

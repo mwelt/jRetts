@@ -3,7 +3,7 @@ package de.ubmw.jRetts.lisp;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.database.Database;
 import de.ubmw.jRetts.util.Omega;
-import de.ubmw.jRetts.vocabulary.Literal;
+import de.ubmw.jRetts.datalog.Literal;
 
 import java.util.ArrayList;
 import java.util.HashMap;

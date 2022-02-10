@@ -2,7 +2,7 @@ package de.ubmw.jRetts.lisp;
 
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.database.Database;
-import de.ubmw.jRetts.vocabulary.Literal;
+import de.ubmw.jRetts.datalog.Literal;
 import org.junit.jupiter.api.Test;
 
 import static de.ubmw.jRetts.lisp.SExpressionBuild.F;

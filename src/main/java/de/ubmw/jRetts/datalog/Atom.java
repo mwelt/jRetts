@@ -1,9 +1,11 @@
-package de.ubmw.jRetts.vocabulary;
+package de.ubmw.jRetts.datalog;
 
 import de.ubmw.jRetts.JRettsError;
+import de.ubmw.jRetts.lisp.SExpression;
 import de.ubmw.jRetts.util.Mu;
 
 import java.io.Serializable;
+import java.util.List;
 
 public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable {
 
@@ -81,5 +83,52 @@ public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable 
 
     public String toString() {
         return  s.toString() + " " + p.toString() + " " + o.toString() + " .";
+    }
+
+    public static Atom fromSExpression(List<SExpression> sexp) throws JRettsError {
+
+        if ( sexp.size() != 3 ) {
+            throw new JRettsError("Atom Expression must be of lenght 3.");
+        }
+
+        Atom.AtomBuilder aBuilder = new Atom.AtomBuilder();
+
+        SExpression s = sexp.get(0);
+
+        if (s.isVariable()) {
+            aBuilder.s(s.asVariableExp().var());
+        } else if (s.isConstant()) {
+            aBuilder.s(s.asConstantExp().constant());
+        } else {
+            throw new JRettsError(
+                    "Dot function only accepts Variable or Constant in name position.", s);
+        }
+
+        SExpression p = sexp.get(0);
+
+        if (p.isVariable()) {
+            aBuilder.p(p.asVariableExp().var());
+        } else if (p.isConstant()) {
+            aBuilder.p(p.asConstantExp().constant());
+        } else {
+            throw new JRettsError(
+                    "Dot function only accepts Variable or Constant in p position.", s);
+        }
+
+        SExpression o = sexp.get(0);
+
+        if (o.isVariable()) {
+            aBuilder.o(o.asVariableExp().var());
+        } else if (o.isConstant()) {
+            aBuilder.o(o.asConstantExp().constant());
+        } else if (o.isLiteral()) {
+            aBuilder.o(o.asLiteralExp().lit());
+        } else {
+            throw new JRettsError(
+                    "Dot function only accepts Variable or Constant or Literals in o position.", s);
+        }
+
+        return aBuilder.build();
+
     }
 }
