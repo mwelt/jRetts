@@ -29,18 +29,22 @@ public enum LispFunctionE {
 	}),
 
 	DO(new Do()),
+	DOT(new Dot()),
+	BGP(new Bgp()),
+	BGP_DELTA(new BgpDelta()),
+	ADD_RULE(new AddRule()),
 	PLUS(new Plus()),
 	MINUS(new Minus());
 	
-	private static final Map<String, LispFunction> STR2FN = new HashMap<String, LispFunction>();
+	private static final Map<String, LispFunctionE> STR2FN = new HashMap<>();
 
 	static {
 		for(LispFunctionE v : LispFunctionE.values()) {
-			LispFunctionE.STR2FN.put(v.fn.symbol(), v.fn);
+			LispFunctionE.STR2FN.put(v.fn.symbol(), v);
 		}
 	};
 	
-	public static Optional<LispFunction> bySymbol(String symbol) {
+	public static Optional<LispFunctionE> bySymbol(String symbol) {
 		if(STR2FN.containsKey(symbol)) {
 			return Optional.of(STR2FN.get(symbol));
 		}
@@ -48,9 +52,9 @@ public enum LispFunctionE {
 		return Optional.empty();
 	}
 
-	private LispFunction fn = null;
+	private LispFunction fn;
 
-	private LispFunctionE(LispFunction fn) {
+	LispFunctionE(LispFunction fn) {
 		this.fn = fn;
 	}
 	

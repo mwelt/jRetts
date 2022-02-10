@@ -102,7 +102,7 @@ public class Parser {
         // ---------- //
 
         int cpos = 0, cline = 0;
-        FunctionExp cSExp = new FunctionExp(LispFunctionE.DO.getFn(),new ArrayList<>(), -1, cpos);
+        FunctionExp cSExp = new FunctionExp(LispFunctionE.DO,new ArrayList<>(), -1, cpos);
 
         State cstate = ADOWN;
         State lstate = ADOWN;
@@ -156,7 +156,7 @@ public class Parser {
 
                 if(lstate != cstate && lstate == ASYMBOL && first){
                     String fnSymbol = cBuf.flip().toString();
-                    Optional<LispFunction> fn = LispFunctionE.bySymbol(fnSymbol);
+                    Optional<LispFunctionE> fn = LispFunctionE.bySymbol(fnSymbol);
                     if(fn.isEmpty()) {
                         throw new ParserError("Unknown function symbol \"" + fnSymbol + "\".", cline, cpos);
                     }
@@ -177,12 +177,12 @@ public class Parser {
                         if (inArray) {
                             throw new ParserError("Variables are not allowed inside arrays.", cline, cpos);
                         }
-                        paraExp = new VariableExp(new Variable(paraSymbol), cline, cpos);
+                        paraExp = new VariableExp(new Variable(paraSymbol.substring(1)), cline, cpos);
 
                     } else if(paraSymbol.charAt(0) == ':') {
 
                         // -- a constant -- //
-                       paraExp = new ConstantExp(new Constant(paraSymbol), cline, cpos);
+                       paraExp = new ConstantExp(new Constant(paraSymbol.substring(1)), cline, cpos);
 
                     } else {
 
@@ -290,7 +290,7 @@ public class Parser {
                     // -- if the first "parameter" is a list -- //
                     // -- then it defaults to do operation   -- //
                     if(first){
-                        cSExp = new FunctionExp(LispFunctionE.DO.getFn(),new ArrayList<>(), cline, cpos);
+                        cSExp = new FunctionExp(LispFunctionE.DO,new ArrayList<>(), cline, cpos);
                     }
 
                     stack.push(cSExp);

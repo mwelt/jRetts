@@ -11,7 +11,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public class ComitRevertList<E> implements Collection<E> {
-    private final List<E> list;
+    private final ArrayList<E> list;
     private final Stack<Integer> versions;
 
     public ComitRevertList() {
@@ -34,15 +34,29 @@ public class ComitRevertList<E> implements Collection<E> {
         int k = versions.pop();
         list.subList(k, list.size()).clear();
         // -- never delete zero size version -- //
-        if(k == 0) { versions.push(0); }
+        if (k == 0) {
+            versions.push(0);
+        }
     }
 
     public void join(int n) {
         int k = versions.pop();
-        while(--n > 0) {
+        while (--n > 0) {
             versions.pop();
         }
         versions.push(k);
+    }
+
+    public Collection<E> delta() {
+        if (versions.size() == 1) {
+            return this;
+        }
+        int i = versions.peek();
+        // -- check if there was an add after the last commit -- //
+        if(i == list.size()) {
+            return Collections.emptyList();
+        }
+        return list.subList(versions.peek(), list.size());
     }
 
     public boolean contains(Object o) {
@@ -172,4 +186,5 @@ public class ComitRevertList<E> implements Collection<E> {
     public Stack<Integer> getVersionStack() {
         return versions;
     }
+
 }

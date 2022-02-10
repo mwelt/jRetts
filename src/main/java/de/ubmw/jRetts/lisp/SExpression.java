@@ -3,6 +3,7 @@ package de.ubmw.jRetts.lisp;
 import de.ubmw.jRetts.JRettsError;
 import de.ubmw.jRetts.datalog.Atom;
 import de.ubmw.jRetts.lisp.fn.LispFunction;
+import de.ubmw.jRetts.lisp.fn.LispFunctionE;
 import de.ubmw.jRetts.util.U;
 import de.ubmw.jRetts.datalog.Literal;
 import de.ubmw.jRetts.datalog.Term.Constant;
@@ -262,7 +263,7 @@ public interface SExpression {
 
 	}
 
-	record FunctionExp(LispFunction fn, List<SExpression> params, int line, int col) implements SExpression {
+	record FunctionExp(LispFunctionE fn, List<SExpression> params, int line, int col) implements SExpression {
 
 		@Override
 		public SExpressionType getType() {
@@ -271,12 +272,12 @@ public interface SExpression {
 
 		@Override
 		public Literal eval(Env env) throws JRettsError {
-			return fn.eval(this, env);
+			return fn.getFn().eval(this, env);
 		}
 
 		@Override
 		public Literal.LiteralType typeCheck(Env env) throws JRettsError {
-			return fn.typeCheck(this, env);
+			return fn.getFn().typeCheck(this, env);
 		}
 
 		@Override
@@ -332,7 +333,7 @@ public interface SExpression {
 		@Override
 		public String toString(final int indent) {
 			return U.indent(indent) +
-					"(" + this.fn.symbol() + "\n" +
+					"(" + this.fn.getFn().symbol() + "\n" +
 					String.join(" ", this.params.stream().map(s -> s.toString(indent + 1)).toArray(String[]::new)) +
 					"\n" +
 					U.indent(indent) +

@@ -104,7 +104,7 @@ public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable 
                     "Dot function only accepts Variable or Constant in name position.", s);
         }
 
-        SExpression p = sexp.get(0);
+        SExpression p = sexp.get(1);
 
         if (p.isVariable()) {
             aBuilder.p(p.asVariableExp().var());
@@ -115,7 +115,7 @@ public record Atom(Term s, Term p, Term o, boolean neg) implements Serializable 
                     "Dot function only accepts Variable or Constant in p position.", s);
         }
 
-        SExpression o = sexp.get(0);
+        SExpression o = sexp.get(2);
 
         if (o.isVariable()) {
             aBuilder.o(o.asVariableExp().var());

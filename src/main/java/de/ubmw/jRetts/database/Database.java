@@ -64,6 +64,10 @@ public class Database {
     }
 
     public Omega query(Atom bgp) throws JRettsError {
+        return query(bgp, false);
+    }
+
+    public Omega query(Atom bgp, boolean delta) throws JRettsError {
 
         if (!(bgp.s().isVariable() || bgp.s().isConstant())
                 && (bgp.p().isVariable() || bgp.p().isConstant())
@@ -73,28 +77,28 @@ public class Database {
 
         if (bgp.s().isVariable() && bgp.p().isVariable() && bgp.o().isVariable()) {
             // -- ?name ?p ?o -- //
-            return querySPO(bgp);
+            return querySPO(bgp, delta);
         } else if (bgp.s().isVariable() && bgp.p().isVariable() && (bgp.o().isConstant() || bgp.o().isLiteral())) {
             // -- ?name ?p :o / 1.234 -- //
-            return querySP(bgp);
+            return querySP(bgp, delta);
         } else if (bgp.s().isVariable() && bgp.p().isConstant() && (bgp.o().isConstant() || bgp.o().isLiteral())) {
             // -- ?name :p :o / 1.234 -- //
-            return queryS(bgp);
+            return queryS(bgp, delta);
         } else if (bgp.s().isConstant() && bgp.p().isVariable() && (bgp.o().isConstant() || bgp.o().isLiteral())) {
             // -- :name ?p :o / 1.234 -- //
-            return queryP(bgp);
+            return queryP(bgp, delta);
         } else if (bgp.s().isConstant() && bgp.p().isConstant() && bgp.o().isVariable()) {
             // -- :name :p ?o -- //
-            return queryO(bgp);
+            return queryO(bgp, delta);
         } else if (bgp.s().isConstant() && bgp.p().isVariable() && bgp.o().isVariable()) {
             // -- :name ?p ?o -- //
-            return queryPO(bgp);
+            return queryPO(bgp, delta);
         } else if (bgp.s().isVariable() && bgp.p().isConstant() && bgp.o().isVariable()) {
             // -- ?name :p ?o -- //
-            return querySO(bgp);
+            return querySO(bgp, delta);
         } else if (bgp.s().isConstant() && bgp.p().isConstant() && (bgp.o().isConstant() || bgp.o().isLiteral())) {
             // -- :name :p :o / 1.234 -- //
-            return queryConst(bgp);
+            return queryConst(bgp, delta);
         }
 
         throw new JRettsError("Unsupported query format.");
@@ -102,7 +106,7 @@ public class Database {
     }
 
     // -- :name :p :o / 1.234 -- //
-    private Omega queryConst(Atom bgp) throws JRettsError {
+    private Omega queryConst(Atom bgp, boolean delta) throws JRettsError {
 
         throw new JRettsError("Queries with constants in all three positions are not allowed.");
 
@@ -122,13 +126,13 @@ public class Database {
     }
 
     // -- ?name :p ?o -- //
-    private Omega querySO(Atom bgp) throws JRettsError {
+    private Omega querySO(Atom bgp, boolean delta) throws JRettsError {
         if (!index.containsKey(bgp.p().asConstant())) {
             return Omega.emptyOmega();
         }
         Omega result = new Omega();
         IndexNode pINode = index.get(bgp.p().asConstant());
-        for (Integer i : pINode.sos()) {
+        for (Integer i : delta ? pINode.sos().delta() : pINode.sos()) {
             Atom a = data.get(i);
             Mu m = new Mu();
             m.put(bgp.s().asVariable(), a.s());
@@ -139,13 +143,13 @@ public class Database {
     }
 
     // -- :name ?p ?o -- //
-    private Omega queryPO(Atom bgp) throws JRettsError {
+    private Omega queryPO(Atom bgp, boolean delta) throws JRettsError {
         if (!index.containsKey(bgp.s().asConstant())) {
             return Omega.emptyOmega();
         }
         Omega result = new Omega();
         IndexNode sINode = index.get(bgp.s().asConstant());
-        for (Integer i : sINode.pos()) {
+        for (Integer i : delta ? sINode.pos().delta() : sINode.pos()) {
             Atom a = data.get(i);
             Mu m = new Mu();
             m.put(bgp.p().asVariable(), a.p());
@@ -156,14 +160,14 @@ public class Database {
     }
 
     // -- :name :p ?o -- //
-    private Omega queryO(Atom bgp) throws JRettsError {
+    private Omega queryO(Atom bgp, boolean delta) throws JRettsError {
         if (!(index.containsKey(bgp.s().asConstant()) &&
                 index.containsKey(bgp.p().asConstant()))) {
             return Omega.emptyOmega();
         }
         Omega result = new Omega();
         IndexNode sINode = index.get(bgp.s().asConstant());
-        for (Integer i : sINode.pos()) {
+        for (Integer i : delta ? sINode.pos().delta() : sINode.pos()) {
             Atom a = data.get(i);
             if (a.p().equals(bgp.p())) {
                 Mu m = new Mu();
@@ -175,7 +179,7 @@ public class Database {
     }
 
     // -- query ?name ?p :o / 1.234 -- //
-    private Omega querySP(Atom bgp) throws JRettsError {
+    private Omega querySP(Atom bgp, boolean delta) throws JRettsError {
         if (!bgp.o().isConstant()) {
             throw new JRettsError("Queries with only literals in o-position are not allowed.");
         }
@@ -184,7 +188,7 @@ public class Database {
         }
         IndexNode oINode = index.get(bgp.o().asConstant());
         Omega result = new Omega();
-        for (Integer i : oINode.sps()) {
+        for (Integer i : delta ? oINode.sps().delta() : oINode.sps()) {
             Atom a = data.get(i);
             Mu m = new Mu();
             m.put(bgp.s().asVariable(), a.s());
@@ -195,13 +199,13 @@ public class Database {
     }
 
     // -- query ?name :p :o / 1.234 -- //
-    private Omega queryS(Atom bgp) throws JRettsError {
+    private Omega queryS(Atom bgp, boolean delta) throws JRettsError {
         if (!index.containsKey(bgp.p().asConstant())) {
             return Omega.emptyOmega();
         }
         IndexNode pINode = index.get(bgp.p().asConstant());
         Omega result = new Omega();
-        for (Integer i : pINode.sos()) {
+        for (Integer i : delta ? pINode.sos().delta() : pINode.sos()) {
             Atom a = data.get(i);
             if (a.o().equals(bgp.o())) {
                 Mu m = new Mu();
@@ -213,13 +217,13 @@ public class Database {
     }
 
     // -- query :name ?p :o / 1.234 -- //
-    private Omega queryP(Atom bgp) throws JRettsError {
+    private Omega queryP(Atom bgp, boolean delta) throws JRettsError {
         if (!index.containsKey(bgp.s().asConstant())) {
             return Omega.emptyOmega();
         }
         IndexNode sINode = index.get(bgp.s().asConstant());
         Omega result = new Omega();
-        for (Integer i : sINode.pos()) {
+        for (Integer i : delta ? sINode.pos().delta() : sINode.pos()) {
             Atom a = data.get(i);
             if (a.o().equals(bgp.o())) {
                 Mu m = new Mu();
@@ -231,7 +235,7 @@ public class Database {
     }
 
     // -- do not allow ?name ?p ?o -- //
-    private Omega querySPO(Atom bgp) throws JRettsError {
+    private Omega querySPO(Atom bgp, boolean delta) throws JRettsError {
         throw new JRettsError("Queries with variables in all three positions are not allowed.");
     }
 
